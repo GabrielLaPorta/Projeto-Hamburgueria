@@ -1,0 +1,28 @@
+/* nav {
+  height: 100px;
+} */
+img {
+  margin-left: 1rem;
+  width: 35%;
+  max-height: 8.75rem;
+}
+
+.navbar-brand {
+  max-width: 23rem;
+}
+
+.navbar-brand a {
+  max-width: 23rem;
+}
+
+.navbar-item {
+  max-height: 3.75rem;
+}
+
+#navbar {
+  padding-top: 3rem;
+}
+
+nav {
+  background-color: rgba(0, 0, 0, 0.575);
+}
