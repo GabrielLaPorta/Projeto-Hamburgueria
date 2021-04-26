@@ -37,7 +37,7 @@ class UserController {
     return response.redirect('back')
   }
 
-  async login ({ request, response, auth }) {
+  async login ({ request, response, auth, session }) {
     const validation = await validate(request.all(), {
       email: 'required|email',
       password: 'required'
@@ -45,7 +45,7 @@ class UserController {
 
     if (validation.fails()) {
       console.log(validation.messages())
-      auth.withErrors(validation.messages())
+      session.withErrors(validation.messages())
         .flashAll()
 
       return response.redirect('back')
