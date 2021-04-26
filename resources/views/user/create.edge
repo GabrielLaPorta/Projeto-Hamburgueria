@@ -8,22 +8,22 @@
       </div>
   @endif
   <div class="box">
-    <h2 class="title">New User</h2>
+    <h2 class="title">Novo Usuário</h2>
 
     <form action="/user" method="POST">
       {{ csrfField() }}
 
       <div class="field has-addons">
         <div class="control is-expanded">
-          <input class="input" type="text" name="username" value="{{ old('username', '') }}" placeholder="Username">
+          <input class="input" type="text" name="username" value="{{ old('username', '') }}" placeholder="Usuário">
           <input class="input" type="email" name="email" value="{{ old('email', '') }}" placeholder="Email">
-          <input class="input" type="password" name="password" value="{{ old('password', '') }}" placeholder="Password">
-          <input class="input" type="password" name="confirmPassword" value="{{ old('confirmPassword', '') }}" placeholder="Confirm password">
+          <input class="input" type="password" name="password" value="{{ old('password', '') }}" placeholder="Senha">
+          <input class="input" type="password" name="confirmPassword" value="{{ old('confirmPassword', '') }}" placeholder="Confirma senha">
         </div>
       </div>
       <div class="control">
         <button type="submit" class="button is-primary">
-            Create
+            Criar
         </button>
       </div>
 
