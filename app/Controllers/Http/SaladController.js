@@ -1,15 +1,25 @@
 'use strict'
 
 const Salads = use("App/Models/Salads")
-const { validate } = use('Validator')
+const {
+    validate
+} = use('Validator')
 
 class SaladController {
-    async index ({ view }) {
+    async index({
+        view
+    }) {
         const salads = await Salads.all()
-        return view.render('burguer.salads', {salads: salads.toJSON()})
+        return view.render('burguer.salads', {
+            salads: salads.toJSON()
+        })
     }
-    
-    async store ({ request, response, session }) {
+
+    async store({
+        request,
+        response,
+        session
+    }) {
         const validation = await validate(request.all(), {
             name: 'required',
             quantity: 'required',
@@ -18,14 +28,19 @@ class SaladController {
 
         if (validation.fails()) {
             session.withErrors(validation.messages())
-            .flashAll()
+                .flashAll()
 
             return response.redirect('back')
         }
 
-        const { name, quantity, value, id } = request.all()
+        const {
+            name,
+            quantity,
+            value,
+            id
+        } = request.all()
 
-        if(id) {
+        if (id) {
             const salad = await Salads.findOrFail(id)
             salad.name = name
             salad.quantity = quantity
@@ -39,22 +54,36 @@ class SaladController {
             await salad.save()
         }
 
-        session.flash({notification: 'Salvo!'})
+        session.flash({
+            notification: 'Salvo!'
+        })
 
         return response.redirect('salad')
     }
 
-    async update ({ request, view }) {
+    async update({
+        request,
+        view
+    }) {
         const params = request.all()
         const salads = await Salads.all()
-        return view.render('burguer.salads', {salads: salads.toJSON(),...params})
+        return view.render('burguer.salads', {
+            salads: salads.toJSON(),
+            ...params
+        })
     }
 
-    async destroy ({ params, session, response }) {
+    async destroy({
+        params,
+        session,
+        response
+    }) {
         const salad = await Salads.find(params.id)
         await salad.delete()
 
-        session.flash({ notification: 'Salada deletada!' })
+        session.flash({
+            notification: 'Salada deletada!'
+        })
 
         return response.redirect('back')
     }

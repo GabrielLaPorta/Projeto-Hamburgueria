@@ -1,15 +1,25 @@
 'use strict'
 
 const Breads = use("App/Models/Breads")
-const { validate } = use('Validator')
+const {
+    validate
+} = use('Validator')
 
 class BreadController {
-    async index ({ view }) {
+    async index({
+        view
+    }) {
         const breads = await Breads.all()
-        return view.render('burguer.breads', {breads: breads.toJSON()})
+        return view.render('burguer.breads', {
+            breads: breads.toJSON()
+        })
     }
-    
-    async store ({ request, response, session }) {
+
+    async store({
+        request,
+        response,
+        session
+    }) {
         const validation = await validate(request.all(), {
             name: 'required',
             quantity: 'required',
@@ -18,14 +28,19 @@ class BreadController {
 
         if (validation.fails()) {
             session.withErrors(validation.messages())
-            .flashAll()
+                .flashAll()
 
             return response.redirect('back')
         }
 
-        const { name, quantity, value, id } = request.all()
+        const {
+            name,
+            quantity,
+            value,
+            id
+        } = request.all()
 
-        if(id) {
+        if (id) {
             const bread = await Breads.findOrFail(id)
             bread.name = name
             bread.quantity = quantity
@@ -39,22 +54,36 @@ class BreadController {
             await bread.save()
         }
 
-        session.flash({notification: 'Salvo!'})
+        session.flash({
+            notification: 'Salvo!'
+        })
 
         return response.redirect('bread')
     }
 
-    async update ({ request, view }) {
+    async update({
+        request,
+        view
+    }) {
         const params = request.all()
         const breads = await Breads.all()
-        return view.render('burguer.breads', {breads: breads.toJSON(),...params})
+        return view.render('burguer.breads', {
+            breads: breads.toJSON(),
+            ...params
+        })
     }
 
-    async destroy ({ params, session, response }) {
+    async destroy({
+        params,
+        session,
+        response
+    }) {
         const bread = await Breads.find(params.id)
         await bread.delete()
 
-        session.flash({ notification: 'Pão deletado!' })
+        session.flash({
+            notification: 'Pão deletado!'
+        })
 
         return response.redirect('back')
     }

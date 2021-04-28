@@ -1,15 +1,25 @@
 'use strict'
 
 const Sauces = use("App/Models/Sauces")
-const { validate } = use('Validator')
+const {
+    validate
+} = use('Validator')
 
 class SauceController {
-    async index ({ view }) {
+    async index({
+        view
+    }) {
         const sauces = await Sauces.all()
-        return view.render('burguer.sauces', {sauces: sauces.toJSON()})
+        return view.render('burguer.sauces', {
+            sauces: sauces.toJSON()
+        })
     }
-    
-    async store ({ request, response, session }) {
+
+    async store({
+        request,
+        response,
+        session
+    }) {
         const validation = await validate(request.all(), {
             name: 'required',
             quantity: 'required',
@@ -18,14 +28,19 @@ class SauceController {
 
         if (validation.fails()) {
             session.withErrors(validation.messages())
-            .flashAll()
+                .flashAll()
 
             return response.redirect('back')
         }
 
-        const { name, quantity, value, id } = request.all()
+        const {
+            name,
+            quantity,
+            value,
+            id
+        } = request.all()
 
-        if(id) {
+        if (id) {
             const sauce = await Sauces.findOrFail(id)
             sauce.name = name
             sauce.quantity = quantity
@@ -39,22 +54,36 @@ class SauceController {
             await sauce.save()
         }
 
-        session.flash({notification: 'Salvo!'})
+        session.flash({
+            notification: 'Salvo!'
+        })
 
         return response.redirect('sauce')
     }
 
-    async update ({ request, view }) {
+    async update({
+        request,
+        view
+    }) {
         const params = request.all()
         const sauces = await Sauces.all()
-        return view.render('burguer.sauces', {sauces: sauces.toJSON(),...params})
+        return view.render('burguer.sauces', {
+            sauces: sauces.toJSON(),
+            ...params
+        })
     }
 
-    async destroy ({ params, session, response }) {
+    async destroy({
+        params,
+        session,
+        response
+    }) {
         const sauce = await Sauces.find(params.id)
         await sauce.delete()
 
-        session.flash({ notification: 'Saucea deletada!' })
+        session.flash({
+            notification: 'Saucea deletada!'
+        })
 
         return response.redirect('back')
     }

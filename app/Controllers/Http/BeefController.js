@@ -1,15 +1,25 @@
 'use strict'
 
 const Beefs = use("App/Models/Beefs")
-const { validate } = use('Validator')
+const {
+    validate
+} = use('Validator')
 
 class BeefController {
-    async index ({ view }) {
+    async index({
+        view
+    }) {
         const beefs = await Beefs.all()
-        return view.render('burguer.beefs', {beefs: beefs.toJSON()})
+        return view.render('burguer.beefs', {
+            beefs: beefs.toJSON()
+        })
     }
-    
-    async store ({ request, response, session }) {
+
+    async store({
+        request,
+        response,
+        session
+    }) {
         const validation = await validate(request.all(), {
             name: 'required',
             quantity: 'required',
@@ -18,14 +28,19 @@ class BeefController {
 
         if (validation.fails()) {
             session.withErrors(validation.messages())
-            .flashAll()
+                .flashAll()
 
             return response.redirect('back')
         }
 
-        const { name, quantity, value, id } = request.all()
+        const {
+            name,
+            quantity,
+            value,
+            id
+        } = request.all()
 
-        if(id) {
+        if (id) {
             const beef = await Beefs.findOrFail(id)
             beef.name = name
             beef.quantity = quantity
@@ -39,22 +54,36 @@ class BeefController {
             await beef.save()
         }
 
-        session.flash({notification: 'Salvo!'})
+        session.flash({
+            notification: 'Salvo!'
+        })
 
         return response.redirect('beef')
     }
 
-    async update ({ request, view }) {
+    async update({
+        request,
+        view
+    }) {
         const params = request.all()
         const beefs = await Beefs.all()
-        return view.render('burguer.beefs', {beefs: beefs.toJSON(),...params})
+        return view.render('burguer.beefs', {
+            beefs: beefs.toJSON(),
+            ...params
+        })
     }
 
-    async destroy ({ params, session, response }) {
+    async destroy({
+        params,
+        session,
+        response
+    }) {
         const beef = await Beefs.find(params.id)
         await beef.delete()
 
-        session.flash({ notification: 'Bife deletado!' })
+        session.flash({
+            notification: 'Bife deletado!'
+        })
 
         return response.redirect('back')
     }

@@ -15,8 +15,7 @@
         <div class="field has-addons">
             <div class="control is-expanded">
                 <input type="hidden" name="id" value="{{id || ''}}" />
-                <input class="input" type="text" name="username" value="{{ username }}"
-                    placeholder="Usuário">
+                <input class="input" type="text" name="username" value="{{ username }}" placeholder="Usuário">
                 <input {{isUpdate ? "disabled" : ""}} class="input" type="email" name="email" value="{{ email }}"
                     placeholder="Email">
                 <input class="input" type="password" name="password" value="{{password}}" placeholder="Senha">
