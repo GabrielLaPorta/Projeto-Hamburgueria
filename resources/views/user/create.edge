@@ -1,35 +1,38 @@
-
 @layout('master')
 
 @section('content')
-  @if(old('notification'))
-      <div class="notification is-success">
-          {{ old('notification') }}
-      </div>
-  @endif
-  <div class="box">
-    <h2 class="title">Novo Usuário</h2>
+@if(old('notification'))
+<div class="notification is-success">
+    {{ old('notification') }}
+</div>
+@endif
+<div class="box">
+    <h2 class="title">Usuário</h2>
 
     <form action="/user" method="POST">
-      {{ csrfField() }}
+        {{ csrfField() }}
 
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <input class="input" type="text" name="username" value="{{ old('username', '') }}" placeholder="Usuário">
-          <input class="input" type="email" name="email" value="{{ old('email', '') }}" placeholder="Email">
-          <input class="input" type="password" name="password" value="{{ old('password', '') }}" placeholder="Senha">
-          <input class="input" type="password" name="confirmPassword" value="{{ old('confirmPassword', '') }}" placeholder="Confirma senha">
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <input type="hidden" name="id" value="{{id || ''}}" />
+                <input class="input" type="text" name="username" value="{{ username }}"
+                    placeholder="Usuário">
+                <input {{isUpdate ? "disabled" : ""}} class="input" type="email" name="email" value="{{ email }}"
+                    placeholder="Email">
+                <input class="input" type="password" name="password" value="{{password}}" placeholder="Senha">
+                <input class="input" type="password" name="confirmPassword" value="{{confirmPassword}}"
+                    placeholder="Confirma senha">
+            </div>
         </div>
-      </div>
-      <div class="control">
-        <button type="submit" class="button is-primary">
-            Criar
-        </button>
-      </div>
+        <div class="control">
+            <button type="submit" class="button is-primary">
+                Salvar
+            </button>
+        </div>
 
-      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('username'), hasErrorFor('username')) }}
-      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
-      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
+        {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('username'), hasErrorFor('username')) }}
+        {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
+        {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
     </form>
-  </div>
+</div>
 @endsection

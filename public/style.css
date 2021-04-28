@@ -3,6 +3,7 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  height: 100vh;
 }
 .input {
   margin-top: 5px;
@@ -72,4 +73,17 @@ input[type="text"], input[type="number"] {
 
 .table {
   background-color: rgba(252, 252, 252, 0.75);
+}
+
+.carousel-img {
+  width: auto;
+  height: 50vh;
+}
+
+#carousel {
+  margin-top: 13vh;
+}
+
+#login {
+  margin-top: 13vh;
 }

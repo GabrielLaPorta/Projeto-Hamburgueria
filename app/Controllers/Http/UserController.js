@@ -1,10 +1,16 @@
 'use strict'
+
 const User = use('App/Models/User');
 const { validate } = use('Validator')
 
 class UserController {
   async index ({ view }) {
-    return view.render('user.create')
+    return view.render('user.create', {isUpdate: false})
+  }
+
+  async details ({ view, auth }) {
+    const userDetails = await User.findOrFail(auth.user.id)
+    return view.render('user.details', {... userDetails.$attributes})
   }
 
   async indexLogin ({ view, response, auth }) {
@@ -18,30 +24,52 @@ class UserController {
   }
 
   async store ({ request, response, session }) {
-    const validation = await validate(request.all(), {
+    const { username, email, password, id } = request.all()
+    let validations = {
       username: 'required|unique:users',
       email: 'required|email|unique:users,email',
       password: 'required'
-    })
+    }
+
+    if(id)  {
+      validations = {
+        username: 'required',
+        password: 'required'
+      }
+    }
+
+    const validation = await validate(request.all(), validations)
 
     if (validation.fails()) {
-      console.log(validation.messages())
       session.withErrors(validation.messages())
         .flashAll()
-
       return response.redirect('back')
     }
 
-    const user = new User()
-    user.username = request.input('username')
-    user.email = request.input('email')
-    user.password = request.input('password')
-    await user.save()
 
-    session.flash({ notification: 'User added!' })
+    if(id) {
+      const user = await User.findOrFail(id)
+      user.username = username
+      user.password = password
+      await user.save()
+      session.flash({ notification: 'Usuário salvo!' })
 
-    return response.redirect('back')
+      return response.redirect('/user/details')
+    } else {
+      const user = new User()
+      user.username = username
+      user.email = email
+      user.password = password
+      await user.save()
+      session.flash({ notification: 'Usuário salvo!' })
+      return response.redirect('/home')
+    }
   }
+
+  async update ({ request, view }) {
+    const params = request.all()
+    return view.render('user.create', {isUpdate: true,...params})
+  } 
 
   async login ({ request, response, auth, session }) {
     try {
@@ -67,7 +95,7 @@ class UserController {
 
     await auth.remember(true).attempt(email, password)
 
-    return response.redirect('/home/bread')
+    return response.redirect('/home')
   }
 
   async logoff ({ request, response, auth, session }) {
