@@ -1,49 +1,94 @@
-<!-- resources/views/master.edge -->
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
+    <title>Hamburguer</title>
     {{ style('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css') }}
     {{ style('https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css') }}
     {{ style('style.css') }}
 </head>
+
 <body>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a href="/">
-        <img src="/assets/images/logo.png">
-      </a>
-
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
-    <div id="navbar" class="navbar-menu">
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <a class="button is-light" href="/">
-              Log in
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a href="/">
+                <img src="/assets/images/logo3.gif">
             </a>
-          </div>
+            <span id="your">YOUR BURGUER</span><br>
+            <span id="monte">MONTE DO SEU JEITO</span><br>
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
         </div>
-      </div>
+
+        <div id="navbar" class="navbar-menu">
+            @loggedIn
+                <div class="navbar-start">
+                    <a class="navbar-item" href="/home">
+                        Inicio
+                    </a>
+
+                    <a class="navbar-item" href="/home/bread">
+                        Pães
+                    </a>
+
+                    <a class="navbar-item" href="/home/beef">
+                        Bifes
+                    </a>
+
+                    <a class="navbar-item" href="/home/salad">
+                        Saladas
+                    </a>
+
+                    <a class="navbar-item" href="/home/sauce">
+                        Molhos
+                    </a>
+                </div>
+            @else
+            @endloggedIn
+            <div id="navbar" class="navbar-menu">
+                <div class="navbar-end">
+                    @loggedIn
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-danger" href="/user/logoff">
+                                Sair
+                            </a>
+                        </div>
+                    </div>
+                    @else
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-light" href="/">
+                                Entrar
+                            </a>
+                        </div>
+                    </div>
+                    @endloggedIn
+                </div>
+            </div>
+        </div>
+    </nav>
+    @if(old('notification'))
+    <div class="notification is-success">
+        {{ old('notification') }}
     </div>
-  </nav>
+    @endif
     <section class="section">
         <div class="container">
             <div class="columns">
-                <div class="column is-8 is-offset-2">
+                <div class="column is-12">
                     @!section('content')
                 </div>
             </div>
         </div>
-  </section>
+    </section>
 </body>
+
 </html>

@@ -7,8 +7,14 @@ class UserController {
     return view.render('user.create')
   }
 
-  async indexLogin ({ view }) {
-    return view.render('user.authenticate')
+  async indexLogin ({ view, response, auth }) {
+    try {
+      await auth.check()
+      return response.redirect('/home/bread')
+    } catch (error) {
+      console.error(error)
+      return view.render('user.authenticate')
+    }
   }
 
   async store ({ request, response, session }) {
@@ -38,6 +44,12 @@ class UserController {
   }
 
   async login ({ request, response, auth, session }) {
+    try {
+      await auth.check()
+      return response.redirect('/home/bread')
+    } catch (error) {
+      response.redirect('/')
+    }
     const validation = await validate(request.all(), {
       email: 'required|email',
       password: 'required'
@@ -53,13 +65,23 @@ class UserController {
 
     const { email, password } = request.all()
 
-    await auth.attempt(email, password)
+    await auth.remember(true).attempt(email, password)
 
-    return response.redirect('/home')
+    return response.redirect('/home/bread')
+  }
+
+  async logoff ({ request, response, auth, session }) {
+    try {
+      await auth.check()
+      await auth.logout()
+      return response.redirect('/')
+    } catch (error) {
+      return response.redirect('back')
+    }
   }
 
   async destroy ({ params, session, response }) {
-    const user = await User.find({email: params.email})
+    const user = await User.find({id: params.id})
     await user.delete()
 
     session.flash({ notification: 'User deleted!' })

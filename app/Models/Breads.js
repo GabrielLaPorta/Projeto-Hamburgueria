@@ -1,16 +1,9 @@
 'use strict'
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/BaseModel')} */
-const BaseModel = use('BaseModel')
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Model = use('Model')
 
-class Breads extends BaseModel {
-    static get primaryKey () {
-        return 'id'
-    }
-
-    static get table () {
-        return 'breads'
-    }
+class Breads extends Model {
 }
 
 module.exports = Breads
