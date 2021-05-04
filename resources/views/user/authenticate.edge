@@ -1,11 +1,6 @@
 @layout('master')
 
 @section('content')
-@if(old('notification'))
-<div class="notification is-success">
-    {{ old('notification') }}
-</div>
-@endif
 <div class="columns" id="login">
     <div class="column is-6 is-offset-3">
         <div class="box">
@@ -22,6 +17,7 @@
                             placeholder="Senha">
                     </div>
                 </div>
+                <span><a href="user/forgot-password">Esqueci minha senha</a></span>
                 <div class="control">
                     <button type="submit" class="button is-primary">
                         Entrar

@@ -1,9 +1,12 @@
 'use strict'
+const { randomBytes } = require('crypto');
+const { promisify } = require('util')
 
 const User = use('App/Models/User');
-const {
-  validate
-} = use('Validator')
+const Token = use('App/Models/Token');
+const { validate } = use('Validator');
+const Mail = use('Mail');
+const Env = use('Env');
 
 class UserController {
   async index({
@@ -43,12 +46,7 @@ class UserController {
     response,
     session
   }) {
-    const {
-      username,
-      email,
-      password,
-      id
-    } = request.all()
+    const { username, email, password, id } = request.all()
     let validations = {
       username: 'required|unique:users',
       email: 'required|email|unique:users,email',
@@ -138,6 +136,93 @@ class UserController {
     await auth.remember(true).attempt(email, password)
 
     return response.redirect('/home')
+  }
+
+  async forgotPasswordSendEmail({
+    request,
+    session,
+    response
+  }) {
+    const email = request.input('email');
+    try {
+      const user = await User.findByOrFail('email', email);
+
+      const random = await promisify(randomBytes)(16);
+      const token = random.toString('hex');
+      console.log(user)
+      await user.tokens().create({
+        token,
+        type: 'forgotPassword'
+      })
+
+      const resetPasswordUrl = `${Env.get('APP_URL')}/user/reset-password-form?token=${token}`;
+
+      Mail.send(
+        'emails.forgot-password', 
+        {name: user.name, resetPasswordUrl}, 
+        (message) => {
+          message
+            .to(user.email)
+            .from('laporta.martins@gmail.com')
+            .subject('YOUR BURGUER - Recuperar de senha')
+        }
+      )
+      session.flash({
+        notification: 'Email enviado!'
+      })
+      return response.redirect('back')
+
+    } catch (e) {
+      console.log(e)
+      session.withErrors({
+        email: 'O Email informado não está cadastrado!'
+      }).flashAll()
+      return response.redirect('back')
+    }
+  }
+
+  async resetPasswordFromEmail({request, view}) {
+    console.log(request._qs.token)
+    return view.render('user.reset-password', {
+      ...request._qs
+    })
+  }
+
+  async resetPassword({
+    request,
+    session,
+    response
+  }) {
+    const { email, password, token } = request.all()
+    try {
+      const user = await User.findByOrFail('email', email);
+      const userToken = await Token.findByOrFail('token', token);
+      console.log(userToken.user_id)
+      if(user.id === userToken.user_id) {
+        const validation = await validate(request.all(), {
+          email: 'required|email',
+          password: 'required'
+        })
+        if (validation.fails()) {
+          console.log(validation.messages())
+          session.withErrors(validation.messages())
+            .flashAll()
+    
+          return response.redirect('back')
+        }
+        user.password = password
+        user.save()
+        session.flash({
+          notification: 'Senha atualizada com sucesso!'
+        })
+  
+        return response.redirect('/')
+      }
+
+    } catch (e) {
+      console.log(e)
+      return response.redirect('back')
+    }
   }
 
   async logoff({

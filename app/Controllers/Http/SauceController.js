@@ -82,7 +82,7 @@ class SauceController {
         await sauce.delete()
 
         session.flash({
-            notification: 'Saucea deletada!'
+            notification: 'Molho deletado!'
         })
 
         return response.redirect('back')
