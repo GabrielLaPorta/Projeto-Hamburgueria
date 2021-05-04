@@ -1,0 +1,99 @@
+@layout('master')
+
+@section('content')
+<div class="columns" id="breads">
+    <div class="column is-8 is-offset-2">
+        <div class="box">
+            <h2 class="title">Cadastro de Pães</h2>
+
+            <form action="/home/bread" method="POST">
+                {{ csrfField() }}
+
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input type="hidden" name="id" value="{{id || ''}}" />
+                        <input class="input" type="text" name="name" value="{{name || ''}}" placeholder="Nome">
+                        <input class="input" type="number" name="quantity" value="{{quantity || ''}}"
+                            placeholder="Quantidade">
+                        <input class="input" type="number" step="0.01" name="value" value="{{value || ''}}"
+                            placeholder="Valor (R$)">
+                    </div>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-primary">
+                        Salvar
+                    </button>
+                </div>
+
+                {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('name'), hasErrorFor('name')) }}
+                {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('quantity'), hasErrorFor('quantity')) }}
+                {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('value'), hasErrorFor('value')) }}
+            </form>
+        </div>
+        <div class="box">
+            <h1 class="title">Pães</h1>
+
+            <table class="table is-bordered is-striped is-narrow is-fullwidth">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Quantidade</th>
+                        <th>Valor</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @each(bread in breads)
+                    <tr>
+                        <td>
+                            {{ ($loop.index + 1) }}
+                        </td>
+                        <td>
+                            {{ bread.name }}
+                        </td>
+                        <td>
+                            {{ bread.quantity }}
+                        </td>
+                        <td>
+                            {{ bread.value }}
+                        </td>
+                        <td>
+                            <form action="{{ '/home/bread/' + bread.id + '?_method=DELETE' }}" method="POST">
+                                {{ csrfField() }}
+                                <button type="submit" class="button is-danger is-outlined">
+                                    <span>Deletar</span>
+                                    <span class="icon is-small">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/home/bread/update" method="POST">
+                                {{ csrfField() }}
+                                <input type="hidden" name="name" value="{{bread.name}}" />
+                                <input type="hidden" name="quantity" value="{{bread.quantity}}" />
+                                <input type="hidden" name="value" value="{{bread.value}}" />
+                                <input type="hidden" name="id" value="{{bread.id}}" />
+                                <button type="submit" class="button is-light">
+                                    <span>Editar</span>
+                                    <span class="icon is-small">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @else
+                    <tr>
+                        <td colspan="4" class="has-text-centered">Não temos pães no estoque!</td>
+                    </tr>
+                    @endeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection

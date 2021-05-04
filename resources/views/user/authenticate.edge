@@ -1,32 +1,33 @@
-
 @layout('master')
 
 @section('content')
-  @if(old('notification'))
-      <div class="notification is-success">
-          {{ old('notification') }}
-      </div>
-  @endif
-  <div class="box">
-    <h2 class="title">Login</h2>
+<div class="columns" id="login">
+    <div class="column is-6 is-offset-3">
+        <div class="box">
+            <h2 class="title">Login</h2>
 
-    <form action="/user/login" method="POST">
-      {{ csrfField() }}
+            <form action="/user/login" method="POST">
+                {{ csrfField() }}
 
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <input class="input" type="email" name="email" value="{{ old('email', '') }}" placeholder="Email">
-          <input class="input" type="password" name="password" value="{{ old('password', '') }}" placeholder="Password">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input class="input" type="email" name="email" value="{{ old('email', '') }}"
+                            placeholder="Email">
+                        <input class="input" type="password" name="password" value="{{ old('password', '') }}"
+                            placeholder="Senha">
+                    </div>
+                </div>
+                <span><a href="user/forgot-password">Esqueci minha senha</a></span>
+                <div class="control">
+                    <button type="submit" class="button is-primary">
+                        Entrar
+                    </button>
+                </div>
+
+                {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
+                {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
+            </form>
         </div>
-      </div>
-      <div class="control">
-        <button type="submit" class="button is-primary">
-            Login
-        </button>
-      </div>
-
-      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
-      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
-    </form>
-  </div>
+    </div>
+</div>
 @endsection

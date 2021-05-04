@@ -1,0 +1,31 @@
+@layout('master')
+
+@section('content')
+<div class="box">
+    <span class="icon is-large">
+        <i class="fa fa-user" aria-hidden="true"></i>
+    </span>
+    <h2 class="title">{{username}}</h2>
+    <span>Email: {{email}}</span>
+
+    <form action="/user/update" method="GET">
+        {{ csrfField() }}
+        <input type="hidden" name="id" value="{{id}}" />
+        <input type="hidden" name="username" value="{{username}}" />
+        <input type="hidden" name="email" value="{{email}}" />
+        <br>
+        <button type="submit" class="button is-light">
+            <span>Editar</span>
+            <span class="icon is-small">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+            </span>
+        </button>
+        <a class="button is-success" href="/user/create">
+            <span>Criar</span>
+            <span class="icon is-small">
+                <i class="fa fa-user-plus" aria-hidden="true"></i>
+            </span>
+        </a>
+    </form>
+</div>
+@endsection
