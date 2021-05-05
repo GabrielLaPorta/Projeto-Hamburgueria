@@ -9,6 +9,16 @@ const Mail = use('Mail');
 const Env = use('Env');
 
 class UserController {
+  constructor(){
+    this.validationMessages = {
+      'username.required': 'Campo usuário é obrigatório',
+      'email.required': 'Campo email é obrigatório',
+      'password.required': 'Campo senha é obrigatório',
+      'email.invalid': 'E-mail inválido',
+      'username.unique': 'Esse usuário ja está sendo usado',
+      'email.unique': 'Esse usuário ja está sendo usado'
+    }
+  }
   async index({
     view
   }) {
@@ -60,7 +70,7 @@ class UserController {
       }
     }
 
-    const validation = await validate(request.all(), validations)
+    const validation = await validate(request.all(), validations, this.validationMessages)
 
     if (validation.fails()) {
       session.withErrors(validation.messages())
@@ -118,7 +128,7 @@ class UserController {
     const validation = await validate(request.all(), {
       email: 'required|email',
       password: 'required'
-    })
+    },this.validationMessages)
 
     if (validation.fails()) {
       console.log(validation.messages())
@@ -128,10 +138,7 @@ class UserController {
       return response.redirect('back')
     }
 
-    const {
-      email,
-      password
-    } = request.all()
+    const { email, password } = request.all()
 
     await auth.remember(true).attempt(email, password)
 
@@ -149,7 +156,7 @@ class UserController {
 
       const random = await promisify(randomBytes)(16);
       const token = random.toString('hex');
-      console.log(user)
+      
       await user.tokens().create({
         token,
         type: 'forgotPassword'
@@ -197,12 +204,12 @@ class UserController {
     try {
       const user = await User.findByOrFail('email', email);
       const userToken = await Token.findByOrFail('token', token);
-      console.log(userToken.user_id)
+
       if(user.id === userToken.user_id) {
         const validation = await validate(request.all(), {
           email: 'required|email',
           password: 'required'
-        })
+        },this.validationMessages)
         if (validation.fails()) {
           console.log(validation.messages())
           session.withErrors(validation.messages())
